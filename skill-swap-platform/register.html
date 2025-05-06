@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | SkillSwap</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="register-page">
+    <div class="container">
+        <div class="form-container">
+            <div class="form-step" id="step1">
+                <h2>Create Your Account</h2>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="firstname">First Name:</label>
+                        <input type="text" id="firstname" name="firstname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name:</label>
+                        <input type="text" id="lastname" name="lastname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="button" class="next-btn" onclick="showStep2()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    
+                </form>
+            </div>
+
+            <div class="form-step" id="step2" style="display: none;">
+                <h2>Select Your Skills</h2>
+                <form id="register-form">
+                    <div class="skills-container">
+                        <div class="search-container">
+                            <input type="text" id="skill-search" placeholder="Search for skills...">
+                            <div class="search-results" id="search-results"></div>
+                        </div>
+                        <div class="selected-skills" id="selected-skills"></div>
+                        <div class="skill-suggestions">
+                            <h3>Popular Skills</h3>
+                            <div class="skill-tags">
+                                <span class="skill-tag" onclick="addSkill('Web Development')">Web Development</span>
+                                <span class="skill-tag" onclick="addSkill('Graphic Design')">Graphic Design</span>
+                                <span class="skill-tag" onclick="addSkill('Digital Marketing')">Digital Marketing</span>
+                                <span class="skill-tag" onclick="addSkill('Content Writing')">Content Writing</span>
+                                <span class="skill-tag" onclick="addSkill('UI/UX Design')">UI/UX Design</span>
+                                <span class="skill-tag" onclick="addSkill('Data Analysis')">Data Analysis</span>
+                                <span class="skill-tag" onclick="addSkill('French')">French</span>
+                                <span class="skill-tag" onclick="addSkill('German')">German</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="form-navigation">
+                        <button type="button" class="back-btn" onclick="showStep1()">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" class="submit-btn" onclick="window.location.href='dashboard.html'">Create Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const selectedSkills = new Set();
+        const skillSuggestions = [
+            'Web Development', 'Graphic Design', 'Digital Marketing', 'Content Writing',
+            'UI/UX Design', 'Data Analysis', 'Mobile Development', 'Project Management',
+            'Social Media Marketing', 'SEO', 'Video Editing', 'Photography',
+            'Copywriting', 'Public Speaking', 'Leadership', 'Team Management','Piano','Drums',
+            'Japanese', 'Game Dev','Oil Painting'
+        ];
+
+        function showStep2() {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        }
+
+        function showStep1() {
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+        }
+
+        function addSkill(skill) {
+            if (!selectedSkills.has(skill)) {
+                selectedSkills.add(skill);
+                updateSelectedSkills();
+            }
+        }
+
+        function removeSkill(skill) {
+            selectedSkills.delete(skill);
+            updateSelectedSkills();
+        }
+
+        function updateSelectedSkills() {
+            const container = document.getElementById('selected-skills');
+            container.innerHTML = '';
+            selectedSkills.forEach(skill => {
+                const tag = document.createElement('span');
+                tag.className = 'selected-skill-tag';
+                tag.innerHTML = `${skill} <i class="fas fa-times" onclick="removeSkill('${skill}')"></i>`;
+                container.appendChild(tag);
+            });
+        }
+
+        document.getElementById('skill-search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const results = skillSuggestions.filter(skill => 
+                skill.toLowerCase().includes(searchTerm)
+            );
+            
+            const resultsContainer = document.getElementById('search-results');
+            resultsContainer.innerHTML = '';
+            
+            if (searchTerm.length > 0) {
+                results.forEach(skill => {
+                    const div = document.createElement('div');
+                    div.className = 'search-result-item';
+                    div.textContent = skill;
+                    div.onclick = () => addSkill(skill);
+                    resultsContainer.appendChild(div);
+                });
+                resultsContainer.classList.add('active');
+            } else {
+                resultsContainer.classList.remove('active');
+            }
+        });
+
+        // Add click outside listener to close search results
+        document.addEventListener('click', function(e) {
+            const searchContainer = document.querySelector('.search-container');
+            const searchResults = document.getElementById('search-results');
+            
+            if (!searchContainer.contains(e.target)) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // Add form submission handler
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            // Here you would typically:
+            // 1. Collect all form data
+            // 2. Send it to your backend
+            // 3. Handle the response
+            
+            // For now, just redirect to dashboard
+            window.location.href = 'dashboard.html';
+        });
+
+    </script>
+</body>
+</html>

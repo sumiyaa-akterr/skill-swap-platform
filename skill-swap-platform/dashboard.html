@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | SkillSwap</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--secondary-color);
+            padding: 1rem;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .sidebar::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .user-profile {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 0.75rem;
+            border: 3px solid var(--primary-color);
+            object-fit: cover;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: #f8f9fa;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .main-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .main-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .side-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+            grid-column: 1 / -1;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .search-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .search-button i {
+            font-size: 1.1rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Cards and Sections */
+        .card, .upcoming-sessions, .skill-progress, .recent-activity, .leaderboard {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Chat Section */
+        .chat-section {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 0.75rem;
+            height: 350px;
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .chat-list {
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .chat-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-item img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-item-info {
+            flex: 1;
+        }
+
+        .chat-item-info h4 {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .chat-item-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .chat-window {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Achievements */
+        .achievements {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .leaderboard-item img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .chat-section {
+                grid-template-columns: 180px 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .chat-section {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        /* Search Results */
+        .search-results {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow-sm);
+            grid-column: 1 / -1;
+            display: none;
+            margin-bottom: 1rem;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .teacher-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .teacher-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .teacher-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .teacher-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 0.75rem;
+            object-fit: cover;
+        }
+
+        .teacher-info {
+            width: 100%;
+        }
+
+        .teacher-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .teacher-skill {
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .teacher-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .teacher-rating i {
+            color: #ffd700;
+        }
+
+        .teacher-availability {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .teacher-price {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .teacher-actions {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .teacher-actions button {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="user-profile">
+                <img src="https://i.pravatar.cc/150?img=32" alt="Profile Picture" class="profile-pic">
+                <h3>John Doe</h3>
+                <p>Web Developer</p>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-search"></i> Find Skills
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-calendar"></i> Schedule
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-comments"></i> Messages
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-trophy"></i> Achievements
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search for skills...">
+                    <input type="text" class="search-input" placeholder="Enter your location...">
+                    <button class="search-button">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                </div>
+            </section>
+
+            <!-- Search Results Section -->
+            <section class="search-results">
+                <h3>Teachers for "Piano"</h3>
+                <div class="teacher-grid">
+                    <div class="teacher-card">
+                        <img src="https://i.pravatar.cc/150?img=5" alt="Sarah Smith" class="teacher-image">
+                        <div class="teacher-info">
+                            <h4 class="teacher-name">Sarah Smith</h4>
+                            <p class="teacher-skill">Piano Teacher</p>
+                            <div class="teacher-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span>(4.5)</span>
+                            </div>
+                            <p class="teacher-availability">Available: Mon, Wed, Fri</p>
+                            <p class="teacher-price">$30/hour</p>
+                            <div class="teacher-actions">
+                                <button class="btn-primary">Book Session</button>
+                                <button class="btn-secondary">Message</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="teacher-card">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Maria Garcia" class="teacher-image">
+                        <div class="teacher-info">
+                            <h4 class="teacher-name">Maria Garcia</h4>
+                            <p class="teacher-skill">Classical Piano</p>
+                            <div class="teacher-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span>(5.0)</span>
+                            </div>
+                            <p class="teacher-availability">Available: Tue, Thu, Sat</p>
+                            <p class="teacher-price">$35/hour</p>
+                            <div class="teacher-actions">
+                                <button class="btn-primary">Book Session</button>
+                                <button class="btn-secondary">Message</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="teacher-card">
+                        <img src="https://i.pravatar.cc/150?img=14" alt="Sophie Anderson" class="teacher-image">
+                        <div class="teacher-info">
+                            <h4 class="teacher-name">Sophie Anderson</h4>
+                            <p class="teacher-skill">Jazz Piano</p>
+                            <div class="teacher-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                                <span>(4.0)</span>
+                            </div>
+                            <p class="teacher-availability">Available: Weekends</p>
+                            <p class="teacher-price">$40/hour</p>
+                            <div class="teacher-actions">
+                                <button class="btn-primary">Book Session</button>
+                                <button class="btn-secondary">Message</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h4>Start Session</h4>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <h4>Schedule</h4>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4>Resources</h4>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h4>Certificates</h4>
+                </div>
+            </section>
+
+            <!-- Main Column -->
+            <div class="main-column">
+                <!-- Upcoming Sessions -->
+                <section class="upcoming-sessions">
+                    <h3>Today's Sessions</h3>
+                    <div class="session-item">
+                        <div class="session-time">
+                            <div>10:00</div>
+                            <small>AM</small>
+                        </div>
+                        <div>
+                            <h4>Piano Lesson with Sarah</h4>
+                            <p>Beginner's Guide to Chords</p>
+                        </div>
+                    </div>
+                    <div class="session-item">
+                        <div class="session-time">
+                            <div>2:30</div>
+                            <small>PM</small>
+                        </div>
+                        <div>
+                            <h4>Spanish Practice with Mike</h4>
+                            <p>Conversational Spanish</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Skill Progress -->
+                <section class="skill-progress">
+                    <h3>Your Progress</h3>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <h4>Piano</h4>
+                            <span>75%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <h4>Spanish</h4>
+                            <span>60%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Chat Section -->
+                <section class="chat-section">
+                    <div class="chat-list">
+                        <div class="chat-item">
+                            <img src="https://i.pravatar.cc/150?img=5" alt="Sarah Smith">
+                            <div class="chat-item-info">
+                                <h4>Sarah Smith</h4>
+                                <p>Piano Teacher</p>
+                            </div>
+                        </div>
+                        <div class="chat-item">
+                            <img src="https://i.pravatar.cc/150?img=8" alt="Mike Johnson">
+                            <div class="chat-item-info">
+                                <h4>Mike Johnson</h4>
+                                <p>Spanish Tutor</p>
+                            </div>
+                        </div>
+                        <div class="chat-item">
+                            <img src="https://i.pravatar.cc/150?img=9" alt="Emma Wilson">
+                            <div class="chat-item-info">
+                                <h4>Emma Wilson</h4>
+                                <p>Web Developer</p>
+                            </div>
+                        </div>
+                        <div class="chat-item">
+                            <img src="https://i.pravatar.cc/150?img=11" alt="David Chen">
+                            <div class="chat-item-info">
+                                <h4>David Chen</h4>
+                                <p>Data Science Expert</p>
+                            </div>
+                        </div>
+                        <div class="chat-item">
+                            <img src="https://i.pravatar.cc/150?img=12" alt="Maria Garcia">
+                            <div class="chat-item-info">
+                                <h4>Maria Garcia</h4>
+                                <p>Graphic Designer</p>
+                            </div>
+                        </div>
+                        <div class="chat-item">
+                            <img src="https://i.pravatar.cc/150?img=13" alt="James Wilson">
+                            <div class="chat-item-info">
+                                <h4>James Wilson</h4>
+                                <p>Photography Pro</p>
+                            </div>
+                        </div>
+                        <div class="chat-item">
+                            <img src="https://i.pravatar.cc/150?img=14" alt="Sophie Anderson">
+                            <div class="chat-item-info">
+                                <h4>Sophie Anderson</h4>
+                                <p>Yoga Instructor</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-window">
+                        <div class="chat-messages">
+                            <!-- Messages will be dynamically added here -->
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" class="search-input" placeholder="Type your message...">
+                            <button class="cta-primary">Send</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Side Column -->
+            <div class="side-column">
+                <!-- Recent Activity -->
+                <section class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div>
+                            <h4>Earned "Quick Learner" Badge</h4>
+                            <p>2 hours ago</p>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div>
+                            <h4>New Message from Sarah</h4>
+                            <p>1 hour ago</p>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h4>Session Scheduled</h4>
+                            <p>3 hours ago</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Achievements Section -->
+                <section class="achievements">
+                    <div class="badge">
+                        <div class="badge-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h4>Quick Learner</h4>
+                    </div>
+                    <div class="badge">
+                        <div class="badge-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Community Builder</h4>
+                    </div>
+                    <div class="badge">
+                        <div class="badge-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4>Skill Master</h4>
+                    </div>
+                </section>
+
+                <!-- Leaderboard -->
+                <section class="leaderboard">
+                    <h3>Top Contributors</h3>
+                    <div class="leaderboard-item">
+                        <span class="rank">1</span>
+                        <img src="https://i.pravatar.cc/150?img=5" alt="Sarah Smith">
+                        <div>
+                            <h4>Sarah Smith</h4>
+                            <p>2,500 points</p>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="rank">2</span>
+                        <img src="https://i.pravatar.cc/150?img=8" alt="Mike Johnson">
+                        <div>
+                            <h4>Mike Johnson</h4>
+                            <p>2,100 points</p>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="rank">3</span>
+                        <img src="https://i.pravatar.cc/150?img=9" alt="Emma Wilson">
+                        <div>
+                            <h4>Emma Wilson</h4>
+                            <p>1,950 points</p>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="rank">4</span>
+                        <img src="https://i.pravatar.cc/150?img=11" alt="David Chen">
+                        <div>
+                            <h4>David Chen</h4>
+                            <p>1,850 points</p>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="rank">5</span>
+                        <img src="https://i.pravatar.cc/150?img=12" alt="Maria Garcia">
+                        <div>
+                            <h4>Maria Garcia</h4>
+                            <p>1,750 points</p>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="rank">6</span>
+                        <img src="https://i.pravatar.cc/150?img=13" alt="James Wilson">
+                        <div>
+                            <h4>James Wilson</h4>
+                            <p>1,650 points</p>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="rank">7</span>
+                        <img src="https://i.pravatar.cc/150?img=14" alt="Sophie Anderson">
+                        <div>
+                            <h4>Sophie Anderson</h4>
+                            <p>1,550 points</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Add active class to nav items
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Chat functionality
+        document.querySelectorAll('.chat-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.chat-item').forEach(i => i.style.background = '');
+                this.style.background = 'var(--secondary-color)';
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchResults = document.querySelector('.search-results');
+        const searchButton = document.querySelector('.search-button');
+
+        function showSearchResults() {
+            if (searchInput.value.length > 0) {
+                searchResults.classList.add('active');
+                const resultsTitle = searchResults.querySelector('h3');
+                resultsTitle.textContent = `Teachers for "${searchInput.value}"`;
+            } else {
+                searchResults.classList.remove('active');
+            }
+        }
+
+        searchInput.addEventListener('input', showSearchResults);
+        searchButton.addEventListener('click', showSearchResults);
+    </script>
+</body>
+</html>
